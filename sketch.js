@@ -1,11 +1,7 @@
 // Variáveis do jogo
-
 let garden = [];
-
 let inventory = {
-
   seeds: { basic: 3, rare: 0, epic: 0 },
-
   water: 10,
 
   flowers: { basic: 0, rare: 0, epic: 0, mutated: 0 },
