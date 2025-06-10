@@ -695,753 +695,350 @@ function drawFlower(x, y, plant) {
   if (plant.isMutated) {
 
     fill(255, 255, 255, 100);
-
     ellipse(x, y, 25 + 5 * sin(frameCount * 0.05), 25 + 5 * sin(frameCount * 0.05));
-
-    
-
     if (random() < 0.1) {
-
       particles.push({
-
         x: x + random(-15, 15),
-
         y: y + random(-15, 15),
-
         size: random(2, 5),
-
         life: 60,
-
         color: [random(200, 255), random(200, 255), random(200, 255)]
-
       });
-
     }
-
   }
-
 }
-
 function drawUI() {
-
   // Painel lateral
-
   fill(100, 100, 100, 200);
-
   rect(10, 10, 180, 680, 10);
-
   fill(255);
-
-  
-
   // Informações
-
   textSize(20);
-
   text("Grow a Garden", 20, 40);
-
   textSize(16);
-
   text(`Dia ${day} (${season})`, 20, 70);
-
   
-
   // Recursos
-
   text(`Sementes: ${inventory.seeds.basic}C ${inventory.seeds.rare}R ${inventory.seeds.epic}E`, 20, 110);
-
   text(`Água: ${floor(inventory.water)}`, 20, 140);
-
   text(`Flores: ${inventory.flowers.basic}C ${inventory.flowers.rare}R ${inventory.flowers.epic}E ${inventory.flowers.mutated}M`, 20, 170);
-
   text(`$${inventory.money}`, 20, 200);
-
   
-
   // Ferramentas
-
   text("Ferramentas:", 20, 240);
-
   drawButton(20, 270, 80, 30, "basicSeed", "Comum", selectedTool === "basicSeed");
-
   drawButton(110, 270, 80, 30, "rareSeed", "Rara", selectedTool === "rareSeed");
-
   drawButton(20, 310, 80, 30, "epicSeed", "Épica", selectedTool === "epicSeed");
-
   drawButton(110, 310, 80, 30, "water", "Regar", selectedTool === "water");
-
   drawButton(20, 350, 80, 30, "harvest", "Colher", selectedTool === "harvest");
-
   drawButton(110, 350, 80, 30, "shop", "Loja", false);
-
 }
-
 function drawButton(x, y, w, h, id, label, isSelected) {
-
   fill(isSelected ? color(0, 150, 0) : color(50));
-
   rect(x, y, w, h, 5);
-
   fill(255);
-
   textAlign(CENTER, CENTER);
-
   text(label, x + w/2, y + h/2);
-
   textAlign(LEFT);
-
 }
-
 function drawShop() {
-
   fill(70, 70, 100, 220);
-
   rect(150, 100, 500, 400, 20);
-
   fill(255);
-
   textSize(24);
-
   textAlign(CENTER);
-
   text("Loja", 400, 140);
-
   textAlign(LEFT);
-
-  
-
   // Abas
-
   drawShopTab(180, 170, "buy", "Comprar");
-
   drawShopTab(330, 170, "sell", "Vender");
-
   
-
   // Conteúdo
-
   if (selectedShopTab === "buy") {
-
     drawShopItem(180, 220, "buyBasic", "Semente Comum", 5);
-
     drawShopItem(330, 220, "buyRare", "Semente Rara", 20);
-
     drawShopItem(480, 220, "buyEpic", "Semente Épica", 50);
-
     drawShopItem(180, 320, "buyWater", "Água (+10)", 3);
-
   } else {
-
     if (inventory.flowers.basic > 0) drawShopItem(180, 220, "sellBasic", "Flor Comum", 5);
-
     if (inventory.flowers.rare > 0) drawShopItem(330, 220, "sellRare", "Flor Rara", 15);
-
     if (inventory.flowers.epic > 0) drawShopItem(480, 220, "sellEpic", "Flor Épica", 30);
-
     if (inventory.flowers.mutated > 0) drawShopItem(330, 320, "sellMutated", "Flor Mutada", 50);
-
   }
-
-  
-
   // Botão fechar
-
   drawButton(350, 450, 100, 40, "closeShop", "Fechar", false);
-
 }
-
 function drawShopTab(x, y, id, label) {
-
   fill(selectedShopTab === id ? color(0, 100, 0) : color(50));
-
   rect(x, y, 120, 40, 5);
-
   fill(255);
-
   textAlign(CENTER, CENTER);
-
   text(label, x + 60, y + 20);
-
   textAlign(LEFT);
-
 }
-
 function drawShopItem(x, y, id, label, price) {
-
   fill(80);
-
   rect(x, y, 120, 80, 5);
-
   fill(255);
-
   text(label, x + 10, y + 25);
-
   text(`$${price}`, x + 10, y + 50);
-
-  
-
   const canAfford = id.startsWith("buy") ? inventory.money >= price : true;
-
   fill(canAfford ? 0 : 100);
-
   rect(x + 10, y + 55, 100, 20, 3);
-
   fill(255);
-
   textAlign(CENTER, CENTER);
-
   text(id.startsWith("buy") ? "Comprar" : "Vender", x + 60, y + 65);
-
   textAlign(LEFT);
-
 }
-
 function drawMessage() {
-
   fill(0, 150, 0, 200);
-
   rect(width/2 - 200, 50, 400, 60, 10);
-
   fill(255);
-
   textSize(20);
-
   textAlign(CENTER, CENTER);
-
   text(message, width/2, 80);
-
   textAlign(LEFT);
-
 }
-
 function updateParticles() {
-
   for (let i = particles.length - 1; i >= 0; i--) {
-
     const p = particles[i];
-
-    
-
     if (p.type === "flower") {
-
       p.y += 1;
-
       p.x += sin(frameCount * 0.1 + p.y * 0.05) * 0.5;
-
     } else {
-
       p.y -= 1;
-
     }
-
-    
-
     p.life--;
-
     if (p.life <= 0) {
-
       particles.splice(i, 1);
-
     }
-
   }
-
 }
-
 function mousePressed() {
-
   if (gameState === "intro") {
-
     introIndex++;
-
     introFade = 0;
-
     if (introIndex >= 3) {
-
       gameState = "playing";
-
       particles = [];
-
     }
-
     return;
-
   }
-
-  
-
   // Verifica clique em corvos
-
   for (let i = crows.length - 1; i >= 0; i--) {
-
     const crow = crows[i];
-
     const distance = dist(mouseX, mouseY, crow.x, crow.y);
-
     if (distance < crow.size) {
-
       crows.splice(i, 1);
-
       inventory.seeds.epic++;
-
-      
-
       for (let j = 0; j < 20; j++) {
-
         particles.push({
-
           x: crow.x + random(-20, 20),
-
           y: crow.y + random(-20, 20),
-
           size: random(3, 8),
-
           life: random(30, 90),
-
           color: [100, 100, 255]
-
         });
-
       }
-
-      
-
       showMessage = true;
-
       message = "Corvo espantado! +1 Semente Épica";
-
       messageTimer = 120;
-
       return;
-
     }
-
   }
-
-  
-
   if (shopOpen) {
-
     handleShopClick();
-
     return;
-
   }
-
-  
-
   // Ferramentas
-
   if (mouseY > 270 && mouseY < 390) {
-
     if (mouseX > 20 && mouseX < 100) {
-
       if (mouseY > 270 && mouseY < 300) selectedTool = "basicSeed";
-
       if (mouseY > 310 && mouseY < 340) selectedTool = "epicSeed";
-
       if (mouseY > 350 && mouseY < 380) selectedTool = "harvest";
-
     }
-
     if (mouseX > 110 && mouseX < 190) {
-
       if (mouseY > 270 && mouseY < 300) selectedTool = "rareSeed";
-
       if (mouseY > 310 && mouseY < 340) selectedTool = "water";
-
       if (mouseY > 350 && mouseY < 380) {
-
         shopOpen = true;
-
         selectedShopTab = "buy";
-
       }
-
     }
-
     return;
-
   }
-
-  
-
   // Jardim
-
   for (let i = 0; i < 5; i++) {
-
     for (let j = 0; j < 5; j++) {
-
       const x = 200 + j * 80;
-
       const y = 100 + i * 80;
-
-      
-
       if (mouseX > x && mouseX < x + 70 && mouseY > y && mouseY < y + 70) {
-
         handleGardenClick(i, j);
-
         return;
-
       }
-
     }
-
   }
-
 }
-
 function handleGardenClick(i, j) {
-
   const plot = garden[i][j];
-
   const x = 200 + j * 80;
-
   const y = 100 + i * 80;
-
-  
-
   switch (selectedTool) {
-
     case "basicSeed":
-
       if (!plot.hasPlant && inventory.seeds.basic > 0) {
-
         plantSeed(i, j, {
-
           name: "Comum",
-
           value: 5,
-
           mutationChance: 0.1,
-
           color: [255, 100, 100]
-
         });
-
         inventory.seeds.basic--;
-
         showMessage = true;
-
         message = "Semente comum plantada!";
-
         messageTimer = 120;
-
-      }
-
+    }
       break;
-
-      
-
     case "rareSeed":
-
       if (!plot.hasPlant && inventory.seeds.rare > 0) {
-
         plantSeed(i, j, {
-
           name: "Rara",
-
           value: 15,
-
           mutationChance: 0.2,
-
           color: [100, 255, 100]
-
         });
-
         inventory.seeds.rare--;
-
         showMessage = true;
-
         message = "Semente rara plantada!";
-
         messageTimer = 120;
-
-      }
-
+    }
       break;
-
-      
-
     case "epicSeed":
-
       if (!plot.hasPlant && inventory.seeds.epic > 0) {
-
         plantSeed(i, j, {
-
           name: "Épica",
-
           value: 30,
-
           mutationChance: 0.3,
-
           color: [100, 100, 255]
-
         });
-
         inventory.seeds.epic--;
-
         showMessage = true;
-
         message = "Semente épica plantada!";
-
         messageTimer = 120;
-
       }
-
       break;
-
-      
-
     case "water":
-
       if (plot.hasPlant && inventory.water > 0) {
-
         plot.water += 10;
-
         inventory.water--;
-
         showMessage = true;
-
         message = "Planta regada!";
-
         messageTimer = 60;
-
       }
-
       break;
-
-      
-
     case "harvest":
-
       if (plot.hasPlant && plot.growth >= 100) {
-
         harvestPlant(i, j);
-
       }
-
       break;
-
   }
-
 }
-
 function plantSeed(i, j, type) {
-
   const plot = garden[i][j];
-
   plot.hasPlant = true;
-
   plot.type = type;
-
   plot.isMutated = random() < type.mutationChance;
-
   plot.growthRate = plot.isMutated ? 1.5 : 1;
-
-  
-
   // Cor baseada na estação
-
   const colors = {
-
     Primavera: [255, 100, 100],
-
     Verão: [255, 150, 50],
-
     Outono: [255, 150, 0],
-
     Inverno: [200, 200, 255]
-
   };
-
   plot.color = colors[season];
-
-  
-
   // Efeito visual
-
   for (let k = 0; k < 10; k++) {
-
     particles.push({
-
       x: 200 + j * 80 + 35 + random(-20, 20),
-
       y: 100 + i * 80 + 70,
-
       size: random(3, 6),
-
       life: random(30, 60),
-
       color: [139, 69, 19]
-
     });
-
   }
-
 }
-
 function harvestPlant(i, j) {
-
   const plot = garden[i][j];
-
   const type = plot.type.name.toLowerCase();
-
-  
-
   inventory.flowers[type]++;
-
   if (plot.isMutated) inventory.flowers.mutated++;
-
-  
-
   const value = floor(plot.harvestValue);
-
   inventory.money += value;
-
-  
-
   // Efeito visual
-
   for (let k = 0; k < 20; k++) {
-
     particles.push({
-
       x: 200 + j * 80 + 35 + random(-20, 20),
-
       y: 100 + i * 80 + 40 - (30 * (plot.growth / 100)) + random(-20, 20),
-
       size: random(3, 8),
-
       life: random(30, 90),
-
       color: plot.isMutated ? [random(255), random(255), random(255)] : plot.color
-
     });
-
   }
-
-  
-
   showMessage = true;
-
   message = `Colhido: $${value}${plot.isMutated ? " (Mutada!)" : ""}`;
-
   messageTimer = 120;
-
-  
-
   resetPlot(i, j);
-
 }
-
 function handleShopClick() {
-
   // Fechar loja
-
   if (mouseX > 350 && mouseX < 450 && mouseY > 450 && mouseY < 490) {
-
     shopOpen = false;
-
     return;
-
   }
-
-  
-
   // Abas
-
   if (mouseY > 170 && mouseY < 210) {
-
     if (mouseX > 180 && mouseX < 300) selectedShopTab = "buy";
-
     if (mouseX > 330 && mouseX < 450) selectedShopTab = "sell";
-
     return;
-
   }
-
-  
-
   // Itens
-
   if (selectedShopTab === "buy") {
-
     if (mouseY > 220 && mouseY < 300) {
-
       if (mouseX > 180 && mouseX < 300 && inventory.money >= 5) {
-
         inventory.seeds.basic++;
-
         inventory.money -= 5;
-
       }
-
       if (mouseX > 330 && mouseX < 450 && inventory.money >= 20) {
-
         inventory.seeds.rare++;
-
         inventory.money -= 20;
-
       }
-
       if (mouseX > 480 && mouseX < 600 && inventory.money >= 50) {
-
         inventory.seeds.epic++;
-
         inventory.money -= 50;
-
       }
-
     }
-
     if (mouseY > 320 && mouseY < 400 && mouseX > 180 && mouseX < 300 && inventory.money >= 3) {
-
       inventory.water += 10;
-
       inventory.money -= 3;
-
     }
-
   } else {
-
     if (mouseY > 220 && mouseY < 300) {
-
       if (mouseX > 180 && mouseX < 300 && inventory.flowers.basic > 0) {
-
         inventory.flowers.basic--;
-
         inventory.money += 5;
-
       }
-
       if (mouseX > 330 && mouseX < 450 && inventory.flowers.rare > 0) {
-
         inventory.flowers.rare--;
-
         inventory.money += 15;
-
       }
-
       if (mouseX > 480 && mouseX < 600 && inventory.flowers.epic > 0) {
-
         inventory.flowers.epic--;
-
         inventory.money += 30;
-
       }
-
     }
-
     if (mouseY > 320 && mouseY < 400 && mouseX > 330 && mouseX < 450 && inventory.flowers.mutated > 0) {
-
       inventory.flowers.mutated--;
-
       inventory.money += 50;
-
     }
-
   }
-
 }
